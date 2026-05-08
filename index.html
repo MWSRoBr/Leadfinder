@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MYWORKSPACE Lead-Finder</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --black: #111110; --warm-white: #f7f5f1; --warm-mid: #e8e4dc;
+    --border: #d0cbc2; --text-main: #111110; --text-mid: #5a5750;
+    --text-muted: #a09b93; --accent-blue: #2a4a7f; --accent-green: #2a6b45;
+  }
+  body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--warm-white); color: var(--text-main); min-height: 100vh; line-height: 1.5; }
+  .hdr { background: var(--black); padding: 18px 32px; display: flex; align-items: center; justify-content: space-between; }
+  .hdr h1 { font-family: 'EB Garamond', serif; font-size: 18px; font-weight: 500; letter-spacing: 0.06em; color: var(--warm-white); }
+  .hdr-right { display: flex; align-items: baseline; gap: 16px; }
+  .hdr-sub { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+  .hdr-version { font-size: 10px; color: #444; letter-spacing: 0.08em; text-transform: uppercase; }
+  .page { max-width: 1100px; margin: 0 auto; padding: 32px 24px; display: grid; grid-template-columns: 340px 1fr; gap: 24px; align-items: start; }
+  .left-col { display: flex; flex-direction: column; gap: 16px; }
+  .panel { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 24px; }
+  .panel-title { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 18px; }
+  label.lbl { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-mid); margin-bottom: 6px; }
+  .field { margin-bottom: 14px; }
+  input[type=text], input[type=password], select { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text-main); background: var(--warm-white); outline: none; transition: border-color 0.15s, background 0.15s; }
+  input:focus, select:focus { border-color: var(--black); background: #fff; }
+  .key-row { display: flex; gap: 8px; align-items: flex-end; margin-bottom: 14px; }
+  .key-row > div { flex: 1; }
+  .key-saved { font-size: 10px; color: var(--text-muted); margin-top: 3px; font-style: italic; }
+  .btn-primary { width: 100%; padding: 12px; background: var(--black); color: #fff; border: 2px solid var(--black); border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: background 0.15s; }
+  .btn-primary:hover { background: #000; }
+  .btn-primary:disabled { background: #aaa; border-color: #aaa; cursor: not-allowed; }
+  .btn-outline { padding: 9px 12px; background: #fff; color: var(--black); border: 2px solid var(--black); border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; white-space: nowrap; transition: all 0.15s; }
+  .btn-outline:hover { background: var(--black); color: #fff; }
+  .status { font-size: 12px; color: var(--text-mid); margin-top: 10px; font-style: italic; min-height: 18px; line-height: 1.5; }
+  .status.err { color: #b22222; font-style: normal; font-weight: 600; }
+  .status.ok { color: var(--accent-green); font-style: normal; font-weight: 600; }
+  .info-panel { background: var(--black); color: var(--warm-white); border-radius: 8px; padding: 24px; }
+  .info-panel h3 { font-family: 'EB Garamond', serif; font-size: 17px; font-weight: 500; margin-bottom: 16px; color: var(--warm-white); letter-spacing: 0.03em; }
+  .info-panel p { font-size: 13px; line-height: 1.7; color: #c8c4bc; margin-bottom: 14px; }
+  .info-panel p:last-child { margin-bottom: 0; }
+  .info-tag { display: inline-block; background: #2a2a28; color: #c8c4bc; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 9px; border-radius: 20px; margin: 3px 2px; }
+  .info-section { margin-top: 16px; padding-top: 16px; border-top: 1px solid #2a2a28; }
+  .info-section-title { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #666; margin-bottom: 8px; }
+  .results-hdr { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+  .card { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 14px; border-left: 4px solid var(--black); transition: box-shadow 0.15s; }
+  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
+  .card.prio-mittel { border-left-color: #bbb; }
+  .card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .card-name { font-family: 'EB Garamond', serif; font-size: 20px; font-weight: 500; line-height: 1.2; }
+  .card-branch { font-size: 10px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text-muted); margin-top: 4px; }
+  .card-right { text-align: right; flex-shrink: 0; margin-left: 16px; }
+  .card-ort { font-size: 12px; color: var(--text-muted); }
+  .badge { display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; margin-top: 6px; }
+  .badge-hoch { background: var(--black); color: #fff; }
+  .badge-mittel { background: var(--warm-mid); color: var(--text-mid); }
+  .slbl { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin: 14px 0 5px; }
+  .trigger { background: var(--warm-white); border-left: 3px solid var(--black); border-radius: 0 5px 5px 0; padding: 10px 14px; font-size: 13px; line-height: 1.55; }
+  .trigger-src { font-size: 11px; margin-top: 5px; color: var(--text-muted); }
+  .trigger-src a { color: var(--text-mid); word-break: break-all; }
+  .warum { background: #eef2fa; border-left: 3px solid var(--accent-blue); border-radius: 0 5px 5px 0; padding: 10px 14px; font-size: 13px; line-height: 1.55; color: #1a2e50; }
+  .zulieferer { background: #eef6f0; border-left: 3px solid var(--accent-green); border-radius: 0 5px 5px 0; padding: 10px 14px; font-size: 13px; line-height: 1.55; color: #1a3d2a; }
+  .contacts-list { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
+  .contact-item { background: var(--warm-white); border-radius: 6px; padding: 10px 14px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; align-items: start; }
+  .clbl { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px; }
+  .cval { font-size: 12px; font-weight: 600; color: var(--text-main); word-break: break-all; }
+  .cval a { color: var(--text-main); text-decoration: none; }
+  .cval a:hover { text-decoration: underline; }
+  .cmuted { font-size: 12px; color: #ccc; font-style: italic; }
+  .pitch { background: #fffef5; border: 1px solid #e8dfa0; border-radius: 6px; padding: 12px 16px; font-family: 'EB Garamond', serif; font-size: 15px; line-height: 1.6; color: var(--text-mid); font-style: italic; margin-top: 5px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+  @media (max-width: 800px) {
+    .page { grid-template-columns: 1fr; }
+    .contact-item { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 500px) {
+    .contact-item { grid-template-columns: 1fr; }
+    .card-head { flex-direction: column; gap: 8px; }
+    .card-right { text-align: left; margin-left: 0; }
+    .key-row { flex-direction: column; align-items: stretch; }
+    .hdr { flex-direction: column; gap: 4px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <h1>MYWORKSPACE &mdash; Lead-Finder</h1>
+  <div class="hdr-right">
+    <span class="hdr-sub">Aussendienst-Tool</span>
+    <span class="hdr-version">v3.0</span>
+  </div>
+</div>
+
+<div class="page">
+  <div class="left-col">
+    <div class="panel">
+      <div class="panel-title">Suchparameter</div>
+      <div class="field">
+        <label class="lbl">Stadt</label>
+        <input type="text" id="location" placeholder="z.B. Koeln" />
+      </div>
+      <div class="field">
+        <label class="lbl">Radius</label>
+        <select id="radius">
+          <option value="10">10 km</option>
+          <option value="25" selected>25 km</option>
+          <option value="50">50 km</option>
+          <option value="75">75 km</option>
+          <option value="100">100 km</option>
+        </select>
+      </div>
+      <hr>
+      <div class="key-row">
+        <div>
+          <label class="lbl">API-Key</label>
+          <input type="password" id="apikey" placeholder="sk-ant-..." />
+          <div class="key-saved" id="keysaved"></div>
+        </div>
+        <button class="btn-outline" onclick="clearKey()">Loeschen</button>
+      </div>
+      <button class="btn-primary" id="searchbtn" onclick="doSearch()">Vertriebszeitpunkte finden</button>
+      <div class="status" id="status"></div>
+    </div>
+
+    <div class="info-panel">
+      <h3>Was macht dieses Tool?</h3>
+      <p>Der Lead-Finder sucht gezielt nach Unternehmen, die sich gerade veraendern – und deshalb bald Bueros einrichten, umbauen oder erweitern werden.</p>
+      <p>Nicht wer generell interessant ist, sondern wer <strong style="color:#fff">jetzt gerade im richtigen Moment</strong> ist: kurz bevor die Einrichtungsentscheidung faellt.</p>
+      <div class="info-section">
+        <div class="info-section-title">Zielgruppe</div>
+        <p style="margin:0">Inhabergefuehrte Mittelstaendler mit 100–500 Mitarbeitern – kurze Entscheidungswege, der Inhaber entscheidet selbst.</p>
+      </div>
+      <div class="info-section">
+        <div class="info-section-title">Wonach wird gesucht</div>
+        <span class="info-tag">Neue Standorte</span>
+        <span class="info-tag">Stellenanzeigen</span>
+        <span class="info-tag">Expansion</span>
+        <span class="info-tag">Baugenehmigungen</span>
+        <span class="info-tag">Umzuege</span>
+        <span class="info-tag">Wachstumsmeldungen</span>
+      </div>
+      <div class="info-section">
+        <div class="info-section-title">Branchen</div>
+        <p style="margin-bottom:8px">Klassisch: Kanzleien, Agenturen, Beratungen, Finanzdienstleister.</p>
+        <p style="margin:0">Hidden Gems: Pflegefachschulen, Bildungstraeger, Sozialdienste, Ingenieurbüros – dort sind Wettbewerber selten aktiv.</p>
+      </div>
+      <div class="info-section">
+        <div class="info-section-title">Pro Lead erhaeltst du</div>
+        <p style="margin:0">Trigger-Signal mit Quelle &middot; Ansprechpartner &middot; Kontaktdaten &middot; Fertiger Einstiegssatz fuer den Kaltanruf</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-col" id="results"></div>
+</div>
+
+<script>
+(function(){
+  try {
+    var k = localStorage.getItem('mw_leadfinder_key');
+    if (k) { document.getElementById('apikey').value = k; document.getElementById('keysaved').textContent = 'Key gespeichert.'; }
+  } catch(e) {}
+})();
+
+function saveKey(k) { try { localStorage.setItem('mw_leadfinder_key', k); document.getElementById('keysaved').textContent = 'Key gespeichert.'; } catch(e) {} }
+function clearKey() { try { localStorage.removeItem('mw_leadfinder_key'); } catch(e) {} document.getElementById('apikey').value = ''; document.getElementById('keysaved').textContent = ''; }
+function esc(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtSrc(src) {
+  if (!src) return '<span class="cmuted">keine Angabe</span>';
+  var s = String(src).trim();
+  if (s.indexOf('http') === 0) {
+    try { var u = new URL(s); var p = u.pathname.length>42?u.pathname.substring(0,42)+'...':u.pathname; return '<a href="'+esc(s)+'" target="_blank" rel="noopener">'+esc(u.hostname+p)+'</a>'; }
+    catch(e) { return '<a href="'+esc(s)+'" target="_blank">'+esc(s)+'</a>'; }
+  }
+  return esc(s);
+}
+function isNA(v) { if (!v) return true; var x = String(v).toLowerCase().trim(); return !x||x==='nicht oeffentlich'||x==='nicht öffentlich'||x==='unbekannt'||x==='n/a'||x==='-'||x==='keine angabe'; }
+
+function renderContact(c) {
+  if (!c) return '';
+  var tel = isNA(c.telefon) ? '<span class="cmuted">–</span>' : '<a href="tel:'+esc(c.telefon)+'" class="cval">'+esc(c.telefon)+'</a>';
+  var mail = isNA(c.email) ? '<span class="cmuted">–</span>' : '<a href="mailto:'+esc(c.email)+'" class="cval">'+esc(c.email)+'</a>';
+  return '<div class="contact-item">'
+    +'<div><div class="clbl">Name</div><div class="cval">'+esc(c.name||'')+'</div></div>'
+    +'<div><div class="clbl">Funktion</div><div class="cval">'+esc(c.funktion||'')+'</div></div>'
+    +'<div><div class="clbl">Telefon</div>'+tel+'</div>'
+    +'<div><div class="clbl">E-Mail</div>'+mail+'</div>'
+    +'</div>';
+}
+
+function renderLeads(leads) {
+  var el = document.getElementById('results');
+  var hoch = leads.filter(function(l){ return (l.prioritaet||'').toLowerCase()==='hoch'; });
+  var sorted = hoch.concat(leads.filter(function(l){ return (l.prioritaet||'').toLowerCase()!=='hoch'; }));
+  var header = '<div class="results-hdr">'+sorted.length+' Lead'+(sorted.length!==1?'s':'')+' &nbsp;&middot;&nbsp; '+hoch.length+' Hoch &nbsp;&middot;&nbsp; '+(sorted.length-hoch.length)+' Mittel</div>';
+  var cards = sorted.map(function(l) {
+    var prio = (l.prioritaet||'').toLowerCase()==='hoch'?'hoch':'mittel';
+    var warum = l.warumJetzt?'<div class="slbl">Warum jetzt</div><div class="warum">'+esc(l.warumJetzt)+'</div>':'';
+    var zuli = l.zuliefererKontext?'<div class="slbl">Branchenrueckenwind</div><div class="zulieferer">'+esc(l.zuliefererKontext)+'</div>':'';
+    var contacts = [];
+    if (Array.isArray(l.ansprechpartner)) contacts = l.ansprechpartner;
+    else if (l.ansprechpartner && typeof l.ansprechpartner === 'object') contacts = [l.ansprechpartner];
+    else if (l.ansprechpartner && !isNA(l.ansprechpartner)) contacts = [{ name: l.ansprechpartner, funktion: '', telefon: l.telefon||'', email: l.email||'' }];
+    var contactsHtml = contacts.length
+      ? '<div class="slbl">Ansprechpartner</div><div class="contacts-list">'+contacts.map(renderContact).join('')+'</div>'
+      : '<div class="slbl">Ansprechpartner</div><div class="contacts-list"><div class="contact-item"><div style="grid-column:1/-1"><div class="clbl">Hinweis</div><div class="cval" style="font-weight:400;color:var(--text-muted)">Recherche ueber LinkedIn oder Unternehmenswebsite empfohlen</div></div></div></div>';
+    return '<div class="card prio-'+prio+'">'
+      +'<div class="card-head"><div><div class="card-name">'+esc(l.name)+'</div><div class="card-branch">'+esc(l.branche)+'</div></div>'
+      +'<div class="card-right"><div class="card-ort">'+esc(l.ort)+'</div><span class="badge badge-'+prio+'">'+esc(l.prioritaet||'Mittel')+'</span></div></div>'
+      +'<div class="slbl">Trigger-Signal</div>'
+      +'<div class="trigger">'+esc(l.trigger)+'<div class="trigger-src">Quelle: '+fmtSrc(l.triggerQuelle)+'</div></div>'
+      +warum+zuli+contactsHtml
+      +'<div class="slbl">Erstansprache</div>'
+      +'<div class="pitch">&ldquo;'+esc(l.erstansprache)+'&rdquo;</div>'
+      +'</div>';
+  }).join('');
+  el.innerHTML = header + cards;
+}
+
+async function doSearch() {
+  var location = document.getElementById('location').value.trim();
+  var radius = document.getElementById('radius').value;
+  var apiKey = document.getElementById('apikey').value.trim();
+  if (!location) { alert('Bitte eine Stadt eingeben.'); return; }
+  if (!apiKey) { alert('Bitte den API-Key eingeben.'); return; }
+  saveKey(apiKey);
+  var btn = document.getElementById('searchbtn');
+  var st = document.getElementById('status');
+  document.getElementById('results').innerHTML = '';
+  btn.disabled = true;
+  st.className = 'status';
+  st.textContent = 'Suche laeuft – bitte 30–60 Sekunden warten...';
+
+  var prompt = 'Du bist Lead-Recherche-Assistent fuer MYWORKSPACE by Lyreco (360-Grad-Bueroloesungen Deutschland).\n\nFinde bis zu 10 reale inhabergefuehrte Mittelstaendler (100–500 Mitarbeiter) im Umkreis von '+radius+' km um '+location+', bei denen Veraenderungsdruck und Investitionsbereitschaft zusammentreffen.\n\nSuche in klassischen Buerobranchen (Beratung, Kanzleien, Agenturen, Finanzdienstleister, Architekturbüros) UND nach Hidden Gems: Pflegefachschulen, Bildungstraeger, Sozialdienste, Notariate, Ingenieurbüros, Fahrzeugzulieferer.\n\nWichtige Signale: Stellenanzeigen Buerojobs, neue Standorte, Baugenehmigungen, Umzugsmeldungen, Wachstumspresse. NICHT: bereits fertig eingezogene Firmen.\n\nBerücksichtige auch welche Branchen im DAX/MDAX in letzter Zeit stark performed haben – deren Zulieferer haben Liquiditaet aufgebaut.\n\nPrioritaet HOCH: mehrere Signale gleichzeitig. Prioritaet MITTEL: ein klares Signal.\n\nFuer jeden Lead: Finde MEHRERE Ansprechpartner (Inhaber, GF, Office Manager, Prokurist) mit Name, Funktion, Telefon, E-Mail.\n\nNur JSON-Array, kein Text:\n[{"name":"...","branche":"...","ort":"...","prioritaet":"Hoch oder Mittel","trigger":"Konkretes Signal","triggerQuelle":"URL oder Quelle","warumJetzt":"Warum jetzt","zuliefererKontext":"Branchenverbindung oder leer","ansprechpartner":[{"name":"...","funktion":"...","telefon":"...","email":"..."}],"erstansprache":"Einstiegssatz fuer Kaltanruf"}]';
+
+  try {
+    var resp = await fetch('/api/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ apiKey: apiKey, prompt: prompt })
+    });
+    if (!resp.ok) {
+      var err = await resp.json().catch(function(){ return {}; });
+      st.className = 'status err';
+      st.textContent = 'Fehler '+resp.status+': '+((err.error)||'Unbekannt');
+      btn.disabled = false; return;
+    }
+    var data = await resp.json();
+    if (data.error) {
+      st.className = 'status err';
+      st.textContent = 'API-Fehler: '+(data.error.message||data.error);
+      btn.disabled = false; return;
+    }
+    var raw = (data.content||[]).filter(function(b){ return b.type==='text'; }).map(function(b){ return b.text; }).join('');
+    var leads = [];
+    var m = raw.match(/\[[\s\S]*\]/);
+    if (m) { try { leads = JSON.parse(m[0]); } catch(e) {} }
+    if (!leads.length) { st.textContent = 'Keine Ergebnisse. Bitte erneut versuchen.'; btn.disabled = false; return; }
+    var hochCount = leads.filter(function(l){ return (l.prioritaet||'').toLowerCase()==='hoch'; }).length;
+    st.className = 'status ok';
+    st.textContent = leads.length+' Lead'+(leads.length!==1?'s':'')+' gefunden – '+hochCount+' Hoch.';
+    renderLeads(leads);
+  } catch(err) {
+    st.className = 'status err';
+    st.textContent = 'Verbindungsfehler: '+err.message;
+  }
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>

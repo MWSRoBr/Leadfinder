@@ -30,16 +30,24 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // Extract all text from content blocks (handles web search tool responses)
-    if (data.content) {
-      const allText = data.content
-        .filter(b => b.type === 'text')
-        .map(b => b.text)
-        .join('\n');
-      data._extractedText = allText;
-    }
+    // Extract all text blocks and return as debug info
+    const textBlocks = (data.content || [])
+      .filter(b => b.type === 'text')
+      .map(b => b.text);
 
-    return res.status(200).json(data);
+    const allText = textBlocks.join('\n');
+
+    return res.status(200).json({
+      ...data,
+      _debug: {
+        stopReason: data.stop_reason,
+        blockTypes: (data.content || []).map(b => b.type),
+        textBlockCount: textBlocks.length,
+        rawText: allText,
+        rawTextLength: allText.length
+      }
+    });
+
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }

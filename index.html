@@ -8,79 +8,145 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --black: #111110; --warm-white: #f7f5f1; --warm-mid: #e8e4dc;
-    --border: #d0cbc2; --text-main: #111110; --text-mid: #5a5750;
-    --text-muted: #a09b93; --accent-blue: #2a4a7f; --accent-green: #2a6b45;
+    --black: #111110;
+    --white: #ffffff;
+    --bg: #f7f6f3;
+    --border: #e0dbd4;
+    --text: #111110;
+    --text-mid: #5a5750;
+    --text-muted: #a09b93;
+    --blue: #2a4a7f;
+    --green: #2a6b45;
+    --green-ok: #1e7a3e;
   }
-  body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--warm-white); color: var(--text-main); min-height: 100vh; line-height: 1.5; }
-  .hdr { background: var(--black); padding: 18px 32px; display: flex; align-items: center; justify-content: space-between; }
-  .hdr h1 { font-family: 'EB Garamond', serif; font-size: 18px; font-weight: 500; letter-spacing: 0.06em; color: var(--warm-white); }
-  .hdr-right { display: flex; align-items: baseline; gap: 16px; }
-  .hdr-sub { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
-  .hdr-version { font-size: 10px; color: #444; letter-spacing: 0.08em; text-transform: uppercase; }
-  .page { max-width: 1100px; margin: 0 auto; padding: 32px 24px; display: grid; grid-template-columns: 340px 1fr; gap: 24px; align-items: start; }
-  .left-col { display: flex; flex-direction: column; gap: 16px; }
-  .panel { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 24px; }
+
+  body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--white); color: var(--text); min-height: 100vh; }
+
+  /* Header */
+  .hdr { background: var(--black); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
+  .hdr h1 { font-family: 'EB Garamond', serif; font-size: 18px; font-weight: 500; letter-spacing: 0.06em; color: #fff; }
+  .hdr-right { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #555; }
+
+  /* Page */
+  .page { max-width: 1080px; margin: 0 auto; padding: 32px 24px; }
+
+  /* Top row: search + info side by side */
+  .top-row { display: grid; grid-template-columns: 320px 1fr; gap: 24px; margin-bottom: 32px; align-items: start; }
+
+  /* Panels */
+  .panel { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 24px; }
   .panel-title { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 18px; }
-  label.lbl { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-mid); margin-bottom: 6px; }
+
+  label.lbl { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-mid); margin-bottom: 5px; }
   .field { margin-bottom: 14px; }
-  input[type=text], input[type=password], select { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text-main); background: var(--warm-white); outline: none; transition: border-color 0.15s, background 0.15s; }
+  input[type=text], input[type=password], select {
+    width: 100%; padding: 9px 11px;
+    border: 1.5px solid var(--border); border-radius: 5px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text);
+    background: var(--bg); outline: none; transition: border-color 0.15s;
+  }
   input:focus, select:focus { border-color: var(--black); background: #fff; }
-  .key-row { display: flex; gap: 8px; align-items: flex-end; margin-bottom: 14px; }
-  .key-row > div { flex: 1; }
+
+  /* API key row */
+  .key-wrap { position: relative; }
+  .key-wrap input { padding-right: 70px; }
+  .btn-clear-key {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    font-size: 10px; color: #ccc; background: none; border: none;
+    cursor: pointer; font-family: inherit; letter-spacing: 0.05em;
+    padding: 2px 4px;
+  }
+  .btn-clear-key:hover { color: #999; }
   .key-saved { font-size: 10px; color: var(--text-muted); margin-top: 3px; font-style: italic; }
-  .btn-primary { width: 100%; padding: 12px; background: var(--black); color: #fff; border: 2px solid var(--black); border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: background 0.15s; }
-  .btn-primary:hover { background: #000; }
-  .btn-primary:disabled { background: #aaa; border-color: #aaa; cursor: not-allowed; }
-  .btn-outline { padding: 9px 12px; background: #fff; color: var(--black); border: 2px solid var(--black); border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; white-space: nowrap; transition: all 0.15s; }
-  .btn-outline:hover { background: var(--black); color: #fff; }
-  .status { font-size: 12px; color: var(--text-mid); margin-top: 10px; font-style: italic; min-height: 18px; line-height: 1.5; }
+
+  /* Search button */
+  .btn-search {
+    width: 100%; padding: 12px;
+    background: var(--black); color: #fff;
+    border: 2px solid var(--black); border-radius: 6px;
+    font-family: 'DM Sans', sans-serif; font-size: 12px;
+    font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: pointer; margin-top: 4px; transition: background 0.15s;
+  }
+  .btn-search:hover { background: #000; }
+  .btn-search:disabled { background: #bbb; border-color: #bbb; cursor: not-allowed; }
+
+  .status { font-size: 12px; color: var(--text-mid); margin-top: 10px; font-style: italic; min-height: 18px; }
   .status.err { color: #b22222; font-style: normal; font-weight: 600; }
-  .status.ok { color: var(--accent-green); font-style: normal; font-weight: 600; }
-  .info-panel { background: var(--black); color: var(--warm-white); border-radius: 8px; padding: 24px; }
-  .info-panel h3 { font-family: 'EB Garamond', serif; font-size: 17px; font-weight: 500; margin-bottom: 16px; color: var(--warm-white); letter-spacing: 0.03em; }
-  .info-panel p { font-size: 13px; line-height: 1.7; color: #c8c4bc; margin-bottom: 14px; }
+  .status.ok { color: var(--green-ok); font-style: normal; font-weight: 600; }
+
+  /* Info panel */
+  .info-panel { background: var(--black); border-radius: 8px; padding: 24px; height: 100%; }
+  .info-panel h3 { font-family: 'EB Garamond', serif; font-size: 18px; font-weight: 500; color: #fff; margin-bottom: 14px; }
+  .info-panel p { font-size: 13px; line-height: 1.7; color: #b0aba3; margin-bottom: 12px; }
   .info-panel p:last-child { margin-bottom: 0; }
-  .info-tag { display: inline-block; background: #2a2a28; color: #c8c4bc; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 9px; border-radius: 20px; margin: 3px 2px; }
-  .info-section { margin-top: 16px; padding-top: 16px; border-top: 1px solid #2a2a28; }
-  .info-section-title { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #666; margin-bottom: 8px; }
-  .results-hdr { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
-  .card { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 14px; border-left: 4px solid var(--black); transition: box-shadow 0.15s; }
-  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
-  .card.prio-mittel { border-left-color: #bbb; }
+  .info-sep { border: none; border-top: 1px solid #222; margin: 14px 0; }
+  .info-sub { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #555; margin-bottom: 7px; }
+  .tag { display: inline-block; background: #1e1e1c; color: #b0aba3; font-size: 10px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; margin: 2px; }
+
+  /* Divider */
+  hr { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+
+  /* Results */
+  .results-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 20px;
+  }
+  .results-count { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+  .btn-pdf {
+    padding: 8px 16px;
+    background: var(--white); color: var(--black);
+    border: 1.5px solid var(--black); border-radius: 5px;
+    font-family: 'DM Sans', sans-serif; font-size: 11px;
+    font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .btn-pdf:hover { background: var(--black); color: #fff; }
+
+  /* Cards */
+  .card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 14px; border-left: 4px solid var(--black); }
+  .card.prio-mittel { border-left-color: #ccc; }
   .card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
-  .card-name { font-family: 'EB Garamond', serif; font-size: 20px; font-weight: 500; line-height: 1.2; }
-  .card-branch { font-size: 10px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text-muted); margin-top: 4px; }
+  .card-name { font-family: 'EB Garamond', serif; font-size: 21px; font-weight: 500; line-height: 1.2; }
+  .card-branch { font-size: 10px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text-muted); margin-top: 3px; }
   .card-right { text-align: right; flex-shrink: 0; margin-left: 16px; }
   .card-ort { font-size: 12px; color: var(--text-muted); }
-  .badge { display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; margin-top: 6px; }
+  .badge { display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; margin-top: 5px; }
   .badge-hoch { background: var(--black); color: #fff; }
-  .badge-mittel { background: var(--warm-mid); color: var(--text-mid); }
+  .badge-mittel { background: #eee; color: #666; }
+
   .slbl { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin: 14px 0 5px; }
-  .trigger { background: var(--warm-white); border-left: 3px solid var(--black); border-radius: 0 5px 5px 0; padding: 10px 14px; font-size: 13px; line-height: 1.55; }
+  .trigger { background: var(--bg); border-left: 3px solid var(--black); border-radius: 0 5px 5px 0; padding: 10px 14px; font-size: 13px; line-height: 1.55; }
   .trigger-src { font-size: 11px; margin-top: 5px; color: var(--text-muted); }
   .trigger-src a { color: var(--text-mid); word-break: break-all; }
-  .warum { background: #eef2fa; border-left: 3px solid var(--accent-blue); border-radius: 0 5px 5px 0; padding: 10px 14px; font-size: 13px; line-height: 1.55; color: #1a2e50; }
-  .zulieferer { background: #eef6f0; border-left: 3px solid var(--accent-green); border-radius: 0 5px 5px 0; padding: 10px 14px; font-size: 13px; line-height: 1.55; color: #1a3d2a; }
-  .contacts-list { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; }
-  .contact-item { background: var(--warm-white); border-radius: 6px; padding: 10px 14px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; align-items: start; }
+  .warum { background: #eef2fa; border-left: 3px solid var(--blue); border-radius: 0 5px 5px 0; padding: 10px 14px; font-size: 13px; line-height: 1.55; color: #1a2e50; }
+  .zulieferer { background: #eef6f0; border-left: 3px solid var(--green); border-radius: 0 5px 5px 0; padding: 10px 14px; font-size: 13px; line-height: 1.55; color: #1a3d2a; }
+
+  .contacts-list { display: flex; flex-direction: column; gap: 6px; margin-top: 5px; }
+  .contact-item { background: var(--bg); border-radius: 5px; padding: 9px 14px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
   .clbl { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px; }
-  .cval { font-size: 12px; font-weight: 600; color: var(--text-main); word-break: break-all; }
-  .cval a { color: var(--text-main); text-decoration: none; }
+  .cval { font-size: 12px; font-weight: 600; color: var(--text); word-break: break-all; }
+  .cval a { color: var(--text); text-decoration: none; }
   .cval a:hover { text-decoration: underline; }
   .cmuted { font-size: 12px; color: #ccc; font-style: italic; }
+
   .pitch { background: #fffef5; border: 1px solid #e8dfa0; border-radius: 6px; padding: 12px 16px; font-family: 'EB Garamond', serif; font-size: 15px; line-height: 1.6; color: var(--text-mid); font-style: italic; margin-top: 5px; }
-  hr { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
-  @media (max-width: 800px) {
-    .page { grid-template-columns: 1fr; }
+
+  /* Print / PDF */
+  @media print {
+    .hdr, .top-row, .btn-pdf, .results-bar .btn-pdf { display: none !important; }
+    .page { padding: 0; max-width: 100%; }
+    .card { break-inside: avoid; border: 1px solid #ccc !important; margin-bottom: 12px; }
+    body { background: white; }
+  }
+
+  @media (max-width: 780px) {
+    .top-row { grid-template-columns: 1fr; }
     .contact-item { grid-template-columns: 1fr 1fr; }
   }
-  @media (max-width: 500px) {
+  @media (max-width: 480px) {
     .contact-item { grid-template-columns: 1fr; }
     .card-head { flex-direction: column; gap: 8px; }
-    .card-right { text-align: left; margin-left: 0; }
-    .key-row { flex-direction: column; align-items: stretch; }
-    .hdr { flex-direction: column; gap: 4px; }
   }
 </style>
 </head>
@@ -88,14 +154,15 @@
 
 <div class="hdr">
   <h1>MYWORKSPACE &mdash; Lead-Finder</h1>
-  <div class="hdr-right">
-    <span class="hdr-sub">Aussendienst-Tool</span>
-    <span class="hdr-version">v3.0</span>
-  </div>
+  <div class="hdr-right">Aussendienst-Tool &nbsp; v3.1</div>
 </div>
 
 <div class="page">
-  <div class="left-col">
+
+  <!-- Top row -->
+  <div class="top-row">
+
+    <!-- Search -->
     <div class="panel">
       <div class="panel-title">Suchparameter</div>
       <div class="field">
@@ -113,79 +180,134 @@
         </select>
       </div>
       <hr>
-      <div class="key-row">
-        <div>
-          <label class="lbl">API-Key</label>
+      <div class="field">
+        <label class="lbl">API-Key</label>
+        <div class="key-wrap">
           <input type="password" id="apikey" placeholder="sk-ant-..." />
-          <div class="key-saved" id="keysaved"></div>
+          <button class="btn-clear-key" onclick="clearKey()" title="API-Key loeschen">loeschen</button>
         </div>
-        <button class="btn-outline" onclick="clearKey()">Loeschen</button>
+        <div class="key-saved" id="keysaved"></div>
       </div>
-      <button class="btn-primary" id="searchbtn" onclick="doSearch()">Vertriebszeitpunkte finden</button>
+      <button class="btn-search" id="searchbtn" onclick="doSearch()">Vertriebszeitpunkte finden</button>
       <div class="status" id="status"></div>
     </div>
 
+    <!-- Info -->
     <div class="info-panel">
       <h3>Was macht dieses Tool?</h3>
       <p>Der Lead-Finder sucht gezielt nach Unternehmen, die sich gerade veraendern – und deshalb bald Bueros einrichten, umbauen oder erweitern werden.</p>
       <p>Nicht wer generell interessant ist, sondern wer <strong style="color:#fff">jetzt gerade im richtigen Moment</strong> ist: kurz bevor die Einrichtungsentscheidung faellt.</p>
-      <div class="info-section">
-        <div class="info-section-title">Zielgruppe</div>
-        <p style="margin:0">Inhabergefuehrte Mittelstaendler mit 100–500 Mitarbeitern – kurze Entscheidungswege, der Inhaber entscheidet selbst.</p>
-      </div>
-      <div class="info-section">
-        <div class="info-section-title">Wonach wird gesucht</div>
-        <span class="info-tag">Neue Standorte</span>
-        <span class="info-tag">Stellenanzeigen</span>
-        <span class="info-tag">Expansion</span>
-        <span class="info-tag">Baugenehmigungen</span>
-        <span class="info-tag">Umzuege</span>
-        <span class="info-tag">Wachstumsmeldungen</span>
-      </div>
-      <div class="info-section">
-        <div class="info-section-title">Branchen</div>
-        <p style="margin-bottom:8px">Klassisch: Kanzleien, Agenturen, Beratungen, Finanzdienstleister.</p>
-        <p style="margin:0">Hidden Gems: Pflegefachschulen, Bildungstraeger, Sozialdienste, Ingenieurbüros – dort sind Wettbewerber selten aktiv.</p>
-      </div>
-      <div class="info-section">
-        <div class="info-section-title">Pro Lead erhaeltst du</div>
-        <p style="margin:0">Trigger-Signal mit Quelle &middot; Ansprechpartner &middot; Kontaktdaten &middot; Fertiger Einstiegssatz fuer den Kaltanruf</p>
-      </div>
+      <hr class="info-sep">
+      <div class="info-sub">Zielgruppe</div>
+      <p>Inhabergefuehrte Mittelstaendler mit 100–500 Mitarbeitern – kurze Entscheidungswege, der Inhaber entscheidet selbst.</p>
+      <hr class="info-sep">
+      <div class="info-sub">Wonach wird gesucht</div>
+      <span class="tag">Neue Standorte</span>
+      <span class="tag">Stellenanzeigen</span>
+      <span class="tag">Expansion</span>
+      <span class="tag">Baugenehmigungen</span>
+      <span class="tag">Umzuege</span>
+      <span class="tag">Wachstum</span>
+      <hr class="info-sep">
+      <div class="info-sub">Branchen</div>
+      <p style="margin-bottom:6px">Klassisch: Kanzleien, Agenturen, Beratungen, Finanzdienstleister.</p>
+      <p>Hidden Gems: Pflegefachschulen, Bildungstraeger, Sozialdienste, Ingenieurbüros – dort sind Wettbewerber selten aktiv.</p>
     </div>
+
   </div>
 
-  <div class="right-col" id="results"></div>
+  <!-- Results -->
+  <div id="results"></div>
+
 </div>
 
 <script>
 (function(){
   try {
-    var k = localStorage.getItem('mw_leadfinder_key');
+    var k = localStorage.getItem('mw_lf_key');
     if (k) { document.getElementById('apikey').value = k; document.getElementById('keysaved').textContent = 'Key gespeichert.'; }
   } catch(e) {}
 })();
 
-function saveKey(k) { try { localStorage.setItem('mw_leadfinder_key', k); document.getElementById('keysaved').textContent = 'Key gespeichert.'; } catch(e) {} }
-function clearKey() { try { localStorage.removeItem('mw_leadfinder_key'); } catch(e) {} document.getElementById('apikey').value = ''; document.getElementById('keysaved').textContent = ''; }
+function saveKey(k) { try { localStorage.setItem('mw_lf_key', k); document.getElementById('keysaved').textContent = 'Key gespeichert.'; } catch(e) {} }
+function clearKey() {
+  if (!confirm('API-Key wirklich loeschen?')) return;
+  try { localStorage.removeItem('mw_lf_key'); } catch(e) {}
+  document.getElementById('apikey').value = '';
+  document.getElementById('keysaved').textContent = '';
+}
+
 function esc(s) { if (!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
 function fmtSrc(src) {
-  if (!src) return '<span class="cmuted">keine Angabe</span>';
+  if (!src) return '<span class="cmuted">–</span>';
   var s = String(src).trim();
   if (s.indexOf('http') === 0) {
-    try { var u = new URL(s); var p = u.pathname.length>42?u.pathname.substring(0,42)+'...':u.pathname; return '<a href="'+esc(s)+'" target="_blank" rel="noopener">'+esc(u.hostname+p)+'</a>'; }
+    try { var u = new URL(s); var p = u.pathname.length>45?u.pathname.substring(0,45)+'...':u.pathname; return '<a href="'+esc(s)+'" target="_blank" rel="noopener">'+esc(u.hostname+p)+'</a>'; }
     catch(e) { return '<a href="'+esc(s)+'" target="_blank">'+esc(s)+'</a>'; }
   }
   return esc(s);
 }
-function isNA(v) { if (!v) return true; var x = String(v).toLowerCase().trim(); return !x||x==='nicht oeffentlich'||x==='nicht öffentlich'||x==='unbekannt'||x==='n/a'||x==='-'||x==='keine angabe'; }
+
+function isNA(v) {
+  if (!v) return true;
+  var x = String(v).toLowerCase().trim();
+  return !x || x==='nicht oeffentlich' || x==='nicht öffentlich' || x==='unbekannt' || x==='n/a' || x==='-' || x==='keine angabe' || x==='k.a.';
+}
+
+function extractLeads(data) {
+  // Try multiple strategies to find JSON array in response
+  var sources = [];
+
+  // 1. Pre-extracted text from server
+  if (data._extractedText) sources.push(data._extractedText);
+
+  // 2. All text blocks
+  if (data.content) {
+    data.content.forEach(function(b) {
+      if (b.type === 'text' && b.text) sources.push(b.text);
+    });
+  }
+
+  for (var i = 0; i < sources.length; i++) {
+    var text = sources[i];
+
+    // Strip markdown code fences
+    text = text.replace(/```json\s*/gi, '').replace(/```\s*/g, '');
+
+    // Try to find JSON array
+    var patterns = [
+      /(\[[\s\S]*\])/,           // greedy array
+      /(\[\s*\{[\s\S]*\}\s*\])/, // array of objects
+    ];
+
+    for (var j = 0; j < patterns.length; j++) {
+      var m = text.match(patterns[j]);
+      if (m) {
+        try {
+          var leads = JSON.parse(m[1]);
+          if (Array.isArray(leads) && leads.length > 0) return leads;
+        } catch(e) {}
+      }
+    }
+
+    // Try parsing entire text as JSON
+    try {
+      var parsed = JSON.parse(text.trim());
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    } catch(e) {}
+  }
+
+  return [];
+}
 
 function renderContact(c) {
   if (!c) return '';
   var tel = isNA(c.telefon) ? '<span class="cmuted">–</span>' : '<a href="tel:'+esc(c.telefon)+'" class="cval">'+esc(c.telefon)+'</a>';
   var mail = isNA(c.email) ? '<span class="cmuted">–</span>' : '<a href="mailto:'+esc(c.email)+'" class="cval">'+esc(c.email)+'</a>';
   return '<div class="contact-item">'
-    +'<div><div class="clbl">Name</div><div class="cval">'+esc(c.name||'')+'</div></div>'
-    +'<div><div class="clbl">Funktion</div><div class="cval">'+esc(c.funktion||'')+'</div></div>'
+    +'<div><div class="clbl">Name</div><div class="cval">'+esc(c.name||'–')+'</div></div>'
+    +'<div><div class="clbl">Funktion</div><div class="cval">'+esc(c.funktion||'–')+'</div></div>'
     +'<div><div class="clbl">Telefon</div>'+tel+'</div>'
     +'<div><div class="clbl">E-Mail</div>'+mail+'</div>'
     +'</div>';
@@ -195,21 +317,31 @@ function renderLeads(leads) {
   var el = document.getElementById('results');
   var hoch = leads.filter(function(l){ return (l.prioritaet||'').toLowerCase()==='hoch'; });
   var sorted = hoch.concat(leads.filter(function(l){ return (l.prioritaet||'').toLowerCase()!=='hoch'; }));
-  var header = '<div class="results-hdr">'+sorted.length+' Lead'+(sorted.length!==1?'s':'')+' &nbsp;&middot;&nbsp; '+hoch.length+' Hoch &nbsp;&middot;&nbsp; '+(sorted.length-hoch.length)+' Mittel</div>';
+
+  var bar = '<div class="results-bar">'
+    +'<div class="results-count">'+sorted.length+' Lead'+(sorted.length!==1?'s':'')+' &nbsp;&middot;&nbsp; '+hoch.length+' Hoch &nbsp;&middot;&nbsp; '+(sorted.length-hoch.length)+' Mittel</div>'
+    +'<button class="btn-pdf" onclick="window.print()">Als PDF speichern</button>'
+    +'</div>';
+
   var cards = sorted.map(function(l) {
-    var prio = (l.prioritaet||'').toLowerCase()==='hoch'?'hoch':'mittel';
-    var warum = l.warumJetzt?'<div class="slbl">Warum jetzt</div><div class="warum">'+esc(l.warumJetzt)+'</div>':'';
-    var zuli = l.zuliefererKontext?'<div class="slbl">Branchenrueckenwind</div><div class="zulieferer">'+esc(l.zuliefererKontext)+'</div>':'';
+    var prio = (l.prioritaet||'').toLowerCase()==='hoch' ? 'hoch' : 'mittel';
+    var warum = l.warumJetzt ? '<div class="slbl">Warum jetzt</div><div class="warum">'+esc(l.warumJetzt)+'</div>' : '';
+    var zuli = l.zuliefererKontext ? '<div class="slbl">Branchenrueckenwind</div><div class="zulieferer">'+esc(l.zuliefererKontext)+'</div>' : '';
+
     var contacts = [];
     if (Array.isArray(l.ansprechpartner)) contacts = l.ansprechpartner;
     else if (l.ansprechpartner && typeof l.ansprechpartner === 'object') contacts = [l.ansprechpartner];
     else if (l.ansprechpartner && !isNA(l.ansprechpartner)) contacts = [{ name: l.ansprechpartner, funktion: '', telefon: l.telefon||'', email: l.email||'' }];
+
     var contactsHtml = contacts.length
       ? '<div class="slbl">Ansprechpartner</div><div class="contacts-list">'+contacts.map(renderContact).join('')+'</div>'
-      : '<div class="slbl">Ansprechpartner</div><div class="contacts-list"><div class="contact-item"><div style="grid-column:1/-1"><div class="clbl">Hinweis</div><div class="cval" style="font-weight:400;color:var(--text-muted)">Recherche ueber LinkedIn oder Unternehmenswebsite empfohlen</div></div></div></div>';
+      : '<div class="slbl">Ansprechpartner</div><div class="contacts-list"><div class="contact-item" style="grid-template-columns:1fr"><div><div class="clbl">Hinweis</div><div class="cval" style="font-weight:400;color:var(--text-muted)">Recherche ueber LinkedIn oder Unternehmenswebsite empfohlen</div></div></div></div>';
+
     return '<div class="card prio-'+prio+'">'
-      +'<div class="card-head"><div><div class="card-name">'+esc(l.name)+'</div><div class="card-branch">'+esc(l.branche)+'</div></div>'
-      +'<div class="card-right"><div class="card-ort">'+esc(l.ort)+'</div><span class="badge badge-'+prio+'">'+esc(l.prioritaet||'Mittel')+'</span></div></div>'
+      +'<div class="card-head">'
+      +'<div><div class="card-name">'+esc(l.name)+'</div><div class="card-branch">'+esc(l.branche)+'</div></div>'
+      +'<div class="card-right"><div class="card-ort">'+esc(l.ort)+'</div><span class="badge badge-'+prio+'">'+esc(l.prioritaet||'Mittel')+'</span></div>'
+      +'</div>'
       +'<div class="slbl">Trigger-Signal</div>'
       +'<div class="trigger">'+esc(l.trigger)+'<div class="trigger-src">Quelle: '+fmtSrc(l.triggerQuelle)+'</div></div>'
       +warum+zuli+contactsHtml
@@ -217,24 +349,27 @@ function renderLeads(leads) {
       +'<div class="pitch">&ldquo;'+esc(l.erstansprache)+'&rdquo;</div>'
       +'</div>';
   }).join('');
-  el.innerHTML = header + cards;
+
+  el.innerHTML = bar + cards;
 }
 
 async function doSearch() {
   var location = document.getElementById('location').value.trim();
   var radius = document.getElementById('radius').value;
   var apiKey = document.getElementById('apikey').value.trim();
+
   if (!location) { alert('Bitte eine Stadt eingeben.'); return; }
   if (!apiKey) { alert('Bitte den API-Key eingeben.'); return; }
   saveKey(apiKey);
+
   var btn = document.getElementById('searchbtn');
   var st = document.getElementById('status');
   document.getElementById('results').innerHTML = '';
   btn.disabled = true;
   st.className = 'status';
-  st.textContent = 'Suche laeuft – bitte 30–60 Sekunden warten...';
+  st.textContent = 'Suche laeuft – Web-Suche aktiv, bitte 30–60 Sekunden warten...';
 
-  var prompt = 'Du bist Lead-Recherche-Assistent fuer MYWORKSPACE by Lyreco (360-Grad-Bueroloesungen Deutschland).\n\nFinde bis zu 10 reale inhabergefuehrte Mittelstaendler (100–500 Mitarbeiter) im Umkreis von '+radius+' km um '+location+', bei denen Veraenderungsdruck und Investitionsbereitschaft zusammentreffen.\n\nSuche in klassischen Buerobranchen (Beratung, Kanzleien, Agenturen, Finanzdienstleister, Architekturbüros) UND nach Hidden Gems: Pflegefachschulen, Bildungstraeger, Sozialdienste, Notariate, Ingenieurbüros, Fahrzeugzulieferer.\n\nWichtige Signale: Stellenanzeigen Buerojobs, neue Standorte, Baugenehmigungen, Umzugsmeldungen, Wachstumspresse. NICHT: bereits fertig eingezogene Firmen.\n\nBerücksichtige auch welche Branchen im DAX/MDAX in letzter Zeit stark performed haben – deren Zulieferer haben Liquiditaet aufgebaut.\n\nPrioritaet HOCH: mehrere Signale gleichzeitig. Prioritaet MITTEL: ein klares Signal.\n\nFuer jeden Lead: Finde MEHRERE Ansprechpartner (Inhaber, GF, Office Manager, Prokurist) mit Name, Funktion, Telefon, E-Mail.\n\nNur JSON-Array, kein Text:\n[{"name":"...","branche":"...","ort":"...","prioritaet":"Hoch oder Mittel","trigger":"Konkretes Signal","triggerQuelle":"URL oder Quelle","warumJetzt":"Warum jetzt","zuliefererKontext":"Branchenverbindung oder leer","ansprechpartner":[{"name":"...","funktion":"...","telefon":"...","email":"..."}],"erstansprache":"Einstiegssatz fuer Kaltanruf"}]';
+  var prompt = 'Du bist Lead-Recherche-Assistent fuer MYWORKSPACE by Lyreco (ganzheitliche 360-Grad-Bueroloesungen in Deutschland: Licht, Akustik, Ergonomie, Zonen, Design – weit mehr als Tisch und Stuhl).\n\nNutze die Web-Suche aktiv, um reale aktuelle Informationen zu finden.\n\nAufgabe:\n1. Analysiere welche Branchen im DAX/MDAX in den letzten 12 Monaten stark performed haben. Deren mittelstaendische Zulieferer haben Liquiditaet aufgebaut und sind investitionsbereit.\n\n2. Finde bis zu 10 konkrete, reale inhabergefuehrte Mittelstaendler (100–500 Mitarbeiter) im Umkreis von '+radius+' km um '+location+' mit:\n   - Veraenderungsdruck (Wachstum, neuer Standort, Expansion, Reorganisation, Umzug)\n   - Investitionsbereitschaft (gute eigene Lage ODER Zulieferer eines boomenden Sektors)\n\nBranchen: Kanzleien, Agenturen, Beratungen, Finanzdienstleister, Architekturbüros – UND Hidden Gems: Pflegefachschulen, Bildungstraeger, Sozialdienste, Notariate, Ingenieurbüros, Fahrzeugzulieferer.\n\nSignale suchen bei: Stellenanzeigen (Indeed, LinkedIn, StepStone), Pressemitteilungen, Handelsregister, Immobilieninserate fuer Gewerbeflaechen, lokale Wirtschaftsnachrichten.\n\nNICHT: Firmen die bereits fertig eingezogen sind.\n\nPrioritaet HOCH: mehrere Signale gleichzeitig\nPrioritaet MITTEL: ein klares Signal\n\nFuer jeden Lead: Finde MEHRERE Ansprechpartner (Inhaber, GF, Office Manager, Prokurist) mit Name, Funktion, Telefon, E-Mail.\n\nAntworte AUSSCHLIESSLICH mit einem validen JSON-Array. Kein Text davor oder danach, keine Erklaerungen, kein Markdown, keine Code-Bloecke:\n[{"name":"Firmenname","branche":"Branche","ort":"Stadt","prioritaet":"Hoch","trigger":"Konkretes Signal mit Details","triggerQuelle":"https://...","warumJetzt":"Warum jetzt der richtige Moment","zuliefererKontext":"Branchenverbindung oder leerer String","ansprechpartner":[{"name":"Vorname Nachname","funktion":"z.B. Inhaber","telefon":"nicht oeffentlich","email":"nicht oeffentlich"}],"erstansprache":"Konkreter Einstiegssatz"}]';
 
   try {
     var resp = await fetch('/api/search', {
@@ -242,27 +377,28 @@ async function doSearch() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ apiKey: apiKey, prompt: prompt })
     });
-    if (!resp.ok) {
-      var err = await resp.json().catch(function(){ return {}; });
-      st.className = 'status err';
-      st.textContent = 'Fehler '+resp.status+': '+((err.error)||'Unbekannt');
-      btn.disabled = false; return;
-    }
+
     var data = await resp.json();
-    if (data.error) {
+
+    if (!resp.ok || data.error) {
       st.className = 'status err';
-      st.textContent = 'API-Fehler: '+(data.error.message||data.error);
+      st.textContent = 'Fehler: '+((data.error && (data.error.message||data.error))||resp.status);
       btn.disabled = false; return;
     }
-    var raw = (data.content||[]).filter(function(b){ return b.type==='text'; }).map(function(b){ return b.text; }).join('');
-    var leads = [];
-    var m = raw.match(/\[[\s\S]*\]/);
-    if (m) { try { leads = JSON.parse(m[0]); } catch(e) {} }
-    if (!leads.length) { st.textContent = 'Keine Ergebnisse. Bitte erneut versuchen.'; btn.disabled = false; return; }
+
+    var leads = extractLeads(data);
+
+    if (!leads.length) {
+      st.className = 'status err';
+      st.textContent = 'Keine Ergebnisse erhalten. Bitte erneut versuchen.';
+      btn.disabled = false; return;
+    }
+
     var hochCount = leads.filter(function(l){ return (l.prioritaet||'').toLowerCase()==='hoch'; }).length;
     st.className = 'status ok';
-    st.textContent = leads.length+' Lead'+(leads.length!==1?'s':'')+' gefunden – '+hochCount+' Hoch.';
+    st.textContent = leads.length+' Lead'+(leads.length!==1?'s':'')+' gefunden – '+hochCount+' mit hoher Prioritaet.';
     renderLeads(leads);
+
   } catch(err) {
     st.className = 'status err';
     st.textContent = 'Verbindungsfehler: '+err.message;

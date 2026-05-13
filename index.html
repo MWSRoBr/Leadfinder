@@ -11,7 +11,7 @@
     --black: #111110;
     --white: #ffffff;
     --bg: #f7f6f3;
-    --border: #e0dbd4;
+    --border: #CED994;
     --text: #111110;
     --text-mid: #5a5750;
     --text-muted: #a09b93;
@@ -20,7 +20,7 @@
     --green-ok: #1e7a3e;
   }
 
-  body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--white); color: var(--text); min-height: 100vh; }
+  body { font-family: 'Calibri Light', Calibri, 'Calibri Light', Calibri, 'DM Sans', system-ui, sans-serif; background: var(--white); color: var(--text); min-height: 100vh; }
 
   /* Header */
   .hdr { background: var(--black); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
@@ -31,7 +31,7 @@
   .page { max-width: 1080px; margin: 0 auto; padding: 32px 24px; }
 
   /* Top row: search + info side by side */
-  .top-row { display: grid; grid-template-columns: 320px 1fr; gap: 24px; margin-bottom: 32px; align-items: start; }
+  .top-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; align-items: start; }
 
   /* Panels */
   .panel { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 24px; }
@@ -42,7 +42,7 @@
   input[type=text], input[type=password], select {
     width: 100%; padding: 9px 11px;
     border: 1.5px solid var(--border); border-radius: 5px;
-    font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text);
+    font-family: 'Calibri Light', Calibri, sans-serif; font-size: 14px; color: var(--text);
     background: var(--bg); outline: none; transition: border-color 0.15s;
   }
   input:focus, select:focus { border-color: var(--black); background: #fff; }
@@ -64,7 +64,7 @@
     width: 100%; padding: 12px;
     background: var(--black); color: #fff;
     border: 2px solid var(--black); border-radius: 6px;
-    font-family: 'DM Sans', sans-serif; font-size: 12px;
+    font-family: 'Calibri Light', Calibri, sans-serif; font-size: 12px;
     font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
     cursor: pointer; margin-top: 4px; transition: background 0.15s;
   }
@@ -97,7 +97,7 @@
     padding: 8px 16px;
     background: var(--white); color: var(--black);
     border: 1.5px solid var(--black); border-radius: 5px;
-    font-family: 'DM Sans', sans-serif; font-size: 11px;
+    font-family: 'Calibri Light', Calibri, sans-serif; font-size: 11px;
     font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
     cursor: pointer; transition: all 0.15s;
   }
@@ -369,7 +369,7 @@ async function doSearch() {
   st.className = 'status';
   st.textContent = 'Suche laeuft – Web-Suche aktiv, bitte 30–60 Sekunden warten...';
 
-  var prompt = 'Du bist Lead-Recherche-Assistent fuer MYWORKSPACE by Lyreco (ganzheitliche 360-Grad-Bueroloesungen in Deutschland: Licht, Akustik, Ergonomie, Zonen, Design – weit mehr als Tisch und Stuhl).\n\nNutze die Web-Suche aktiv, um reale aktuelle Informationen zu finden.\n\nAufgabe:\n1. Analysiere welche Branchen im DAX/MDAX in den letzten 12 Monaten stark performed haben. Deren mittelstaendische Zulieferer haben Liquiditaet aufgebaut und sind investitionsbereit.\n\n2. Finde bis zu 10 konkrete, reale inhabergefuehrte Mittelstaendler (100–500 Mitarbeiter) im Umkreis von '+radius+' km um '+location+' mit:\n   - Veraenderungsdruck (Wachstum, neuer Standort, Expansion, Reorganisation, Umzug)\n   - Investitionsbereitschaft (gute eigene Lage ODER Zulieferer eines boomenden Sektors)\n\nBranchen: Kanzleien, Agenturen, Beratungen, Finanzdienstleister, Architekturbüros – UND Hidden Gems: Pflegefachschulen, Bildungstraeger, Sozialdienste, Notariate, Ingenieurbüros, Fahrzeugzulieferer.\n\nSignale suchen bei: Stellenanzeigen (Indeed, LinkedIn, StepStone), Pressemitteilungen, Handelsregister, Immobilieninserate fuer Gewerbeflaechen, lokale Wirtschaftsnachrichten.\n\nNICHT: Firmen die bereits fertig eingezogen sind.\n\nPrioritaet HOCH: mehrere Signale gleichzeitig\nPrioritaet MITTEL: ein klares Signal\n\nFuer jeden Lead: Finde MEHRERE Ansprechpartner (Inhaber, GF, Office Manager, Prokurist) mit Name, Funktion, Telefon, E-Mail.\n\nAntworte AUSSCHLIESSLICH mit einem validen JSON-Array. Kein Text davor oder danach, keine Erklaerungen, kein Markdown, keine Code-Bloecke:\n[{"name":"Firmenname","branche":"Branche","ort":"Stadt","prioritaet":"Hoch","trigger":"Konkretes Signal mit Details","triggerQuelle":"https://...","warumJetzt":"Warum jetzt der richtige Moment","zuliefererKontext":"Branchenverbindung oder leerer String","ansprechpartner":[{"name":"Vorname Nachname","funktion":"z.B. Inhaber","telefon":"nicht oeffentlich","email":"nicht oeffentlich"}],"erstansprache":"Konkreter Einstiegssatz"}]';
+  var prompt = 'Du bist Lead-Recherche-Assistent fuer MYWORKSPACE by Lyreco (360-Grad-Bueroloesungen Deutschland).\n\nNutze die Web-Suche um reale Unternehmen im Raum '+location+' zu finden.\n\nSuche nach bis zu 10 Unternehmen im Umkreis '+radius+' km um '+location+' die sich gerade veraendern (Wachstum, Umzug, neuer Standort, Expansion). Zielgruppe: inhabergefuehrte Mittelstaendler.\n\nSuche in klassischen Buerobranchen (Kanzleien, Agenturen, Beratungen) UND Hidden Gems (Pflegefachschulen, Bildungstraeger, Ingenieurbüros, Sozialdienste).\n\nWICHTIG: Gib IMMER ein JSON-Array zurueck, auch wenn Kontaktdaten fehlen. Verwende nicht-oeffentlich als Platzhalter. Schreibe NIEMALS Text statt JSON.\n\nGib NUR dieses JSON-Array zurueck, absolut nichts sonst:\n[{"name":"Firmenname","branche":"Branche","ort":"Stadt","prioritaet":"Hoch oder Mittel","trigger":"Was gefunden","triggerQuelle":"URL","warumJetzt":"Begruendung","zuliefererKontext":"","ansprechpartner":[{"name":"nicht oeffentlich","funktion":"Inhaber oder GF","telefon":"nicht oeffentlich","email":"nicht oeffentlich"}],"erstansprache":"Einstiegssatz"}]'
 
   try {
     var resp = await fetch('/api/search', {
